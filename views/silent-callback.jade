@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    title= title
+    script(src="https://cdn.auth0.com/js/auth0/8.7.0/auth0.min.js")
+    script.
+      var auth0 = new auth0.WebAuth({
+        domain: '#{env.AUTH0_DOMAIN}',
+        clientID: '#{env.AUTH0_CLIENT_ID}'
+      });
+      auth0.parseHash(window.location.hash, function (err, result) {
+        parent.postMessage(err || result, '#{env.AUTH0_CALLBACK_URL}');
+      });
