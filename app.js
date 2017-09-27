@@ -5,6 +5,7 @@ const session = require('express-session');
 const dotenv = require('dotenv');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
+const flash = require('req-flash');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
@@ -51,19 +52,34 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.set('view options', { pretty: true });
 
-
 app.use(logger('dev'));
 app.use(session({
   secret: 'yourSessionSecret',
   resave: true,
   saveUninitialized: true
 }));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Handle auth failure error messages
+app.use(function(req, res, next) {
+  console.log('here');
+ if (req && req.query && req.query.error) {
+  console.log('here');
+   req.flash('error', req.query.error);
+ }
+ if (req && req.query && req.query.error_description) {
+  console.log('here');
+   req.flash('error_description', req.query.error_description);
+ }
+ next();
+});
+
 app.use('/', routes);
 app.use('/user', user);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

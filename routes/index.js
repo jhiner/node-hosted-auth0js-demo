@@ -2,6 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn();
 const router = express.Router();
+const request = require('request');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -47,7 +48,20 @@ router.get('/callback',
   }),
   function(req, res) {
     res.redirect(req.session.returnTo || '/user');
+  }
+);
+
+router.get('/error', function(req, res) {
+  var error = req.flash('error');
+  var error_description = req.flash('error_description');
+  console.log(error);
+  console.log(error_description);
+  req.logout();
+  res.render('error', {
+    error: error,
+    error_description: error_description,
   });
+});
 
 
 router.get('/unauthorized', function(req, res) {
