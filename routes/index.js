@@ -6,7 +6,7 @@ const request = require('request');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'NodeJS Centralized Login Demo' });
+  res.render('index', { title: 'Centralized Login Demo' });
 });
 
 router.get('/login', function(req, res){
@@ -19,7 +19,6 @@ router.get('/diag', function(req, res) {
     AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET.substr(0, 3) + '...',
     AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
     AUTH0_CALLBACK_URL: process.env.AUTH0_CALLBACK_URL,
-    AUTH0_SILENT_CALLBACK_URL: process.env.AUTH0_SILENT_CALLBACK_URL,
     LOGOUT_URL: process.env.LOGOUT_URL,
     API_ENDPOINT: process.env.API_ENDPOINT
   });
@@ -38,10 +37,6 @@ router.post('/callback', function(req, res) {
   res.redirect(req.session.returnTo || '/user');
 });
 
-router.get('/silent-callback.html', function(req, res) {
-  res.render('silent-callback');
-});
-
 router.get('/callback',
   passport.authenticate('auth0', {
     failureRedirect: '/error',
@@ -54,15 +49,12 @@ router.get('/callback',
 router.get('/error', function(req, res) {
   var error = req.flash('error');
   var error_description = req.flash('error_description');
-  console.log(error);
-  console.log(error_description);
   req.logout();
   res.render('error', {
     error: error,
-    error_description: error_description,
+    error_description: error_description
   });
 });
-
 
 router.get('/unauthorized', function(req, res) {
   res.render('unauthorized');

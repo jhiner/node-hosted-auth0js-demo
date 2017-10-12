@@ -65,13 +65,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Handle auth failure error messages
 app.use(function(req, res, next) {
-  console.log('here');
  if (req && req.query && req.query.error) {
-  console.log('here');
    req.flash('error', req.query.error);
  }
  if (req && req.query && req.query.error_description) {
-  console.log('here');
    req.flash('error_description', req.query.error_description);
  }
  next();
